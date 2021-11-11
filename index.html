@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.5/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
+</head>
+<body>
+
+    <div id="app">
+        이름
+        <input v-model="name">
+        <button v-on:click="doAdd" class="add"> 추가하기 </button>
+        <ul>
+            <li v-for="(item, index) in list" v-bind:key="item.id" v-if="item.hp">
+                <!-- v-if="item.hp" hp가 0이되면 사라짐 -->
+                Id.{{ item.id }} {{ item.name }} HP.{{ item.hp }}
+                <span v-if="item.hp < 50" > 빈사상태 </span>
+                <button v-on:click="doAttack(index)">공격</button>
+                <button v-on:click="deRemove(index)" class="del">제거</button>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+
+        new Vue({
+            el:'#app',
+            data:{
+                name: '키메라',
+                list:[
+                    { id: 1, name: '슬라임', hp: 100},
+                    { id: 2, name: '고블린', hp: 200},
+                    { id: 3, name: '드래곤', hp: 500},
+                ]
+            },
+            methods: {
+                doAdd:function(){ // 추가 버튼을 클릭할 때의 핸들러
+                    var max = this.list.reduce(function(a,b){
+                        return a > b.id ? a : b.id
+                    },0)
+                    this.list.push({ // 새로운 몬스터를 리스트에 추가하기
+                        id: max + 1, // 현재 최대 ID에 1을 더해서 유니크 ID로 사용하기
+                        name: this.name,  // 현재 입력 양식의 값
+                        hp:500
+                    })
+                },
+                deRemove:function(index){// 전달받은 인덱스 위치에서 한 개만큼 제거하기
+                    this.list.splice(index, 1)
+                },
+                doAttack:function(index){
+                    this.list[index].hp -= 10 // HP 감소시키기
+                }
+            },
+        })
+
+    </script>
+    
+
+    <style>
+        
+        .add{
+            background: #FBCA29;
+            width: 80px;
+            color: #000;
+        }
+        .del{
+            background: #26A7FE;
+        }
+        button{
+            background: #eb516b;
+            color: #fff;
+            border: 0;
+            width: 60px;
+            height: 30px;
+            line-height: 30px;
+            margin-bottom: 10px;
+
+        }
+        span{
+            color: #eb516b;
+        }
+
+    </style>
+</body>
+</html>
